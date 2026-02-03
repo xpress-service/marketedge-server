@@ -5,7 +5,6 @@ node_modules/
 .env
 
 # Google Service Account credentials
-*.json
 credentials.json
 service-account.json
 
