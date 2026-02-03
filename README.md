@@ -123,7 +123,7 @@ npm run dev
 npm start
 ```
 
-The server will start on `http://localhost:5000`
+The server will start on `http://localhost:5000` (development) or `https://marketedge-server.onrender.com` (production)
 
 You should see output like:
 ```
@@ -219,11 +219,15 @@ Response:
 
 ### Using curl:
 ```bash
-# Test health
+# Test health (local)
 curl http://localhost:5000/api/health
+# Or production:
+curl https://marketedge-server.onrender.com/api/health
 
-# Get all locations
+# Get all locations (local)
 curl http://localhost:5000/api/locations
+# Or production:
+curl https://marketedge-server.onrender.com/api/locations
 
 # Get specific location
 curl http://localhost:5000/api/locations/OMOLE
@@ -284,8 +288,12 @@ To connect your React frontend to this backend:
 2. Use `fetch` or `axios` to call the endpoints
 3. Example:
 ```javascript
-const response = await fetch('http://localhost:5000/api/locations');
+// For production:
+const response = await fetch('https://marketedge-server.onrender.com/api/locations');
 const { data } = await response.json();
+
+// For local development:
+// const response = await fetch('http://localhost:5000/api/locations');
 ```
 
 ---
