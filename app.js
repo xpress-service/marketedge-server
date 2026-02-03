@@ -26,18 +26,20 @@ const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
  // Helper function to parse spreadsheet data
 const parseSheetData = (rows) => {
-  if (!rows || rows.length === 0) return [];
+  if (!rows || rows.length === 0) return {};
   const data = {};
+  
+  // Data starts at row 6 (index 5), location is in column B (index 1)
   for (let i = 5; i < rows.length; i++) {
     const row = rows[i];
-    if (row && row[0]) {
-      const location = row[0].trim();
+    if (row && row[1] && row[1].trim()) {
+      const location = row[1].trim();
       data[location] = {
         location: location,
-        weeklyTarget: parseFloat(row[2]?.replace(/,/g, "") || 0),
-        weeklyActual: parseFloat(row[3]?.replace(/,/g, "") || 0),
-        dailyTarget: parseFloat(row[5]?.replace(/,/g, "") || 0),
-        dailyActual: parseFloat(row[6]?.replace(/,/g, "") || 0),
+        weeklyTarget: parseFloat((row[2] || "0").toString().replace(/,/g, "").trim()),
+        weeklyActual: parseFloat((row[3] || "0").toString().replace(/,/g, "").trim()),
+        dailyTarget: parseFloat((row[5] || "0").toString().replace(/,/g, "").trim()),
+        dailyActual: parseFloat((row[6] || "0").toString().replace(/,/g, "").trim()),
       };
     }
   }
@@ -49,7 +51,7 @@ app.get("/api/locations", async (req, res) => {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Sheet1!A:H", // Adjust range based on sheet
+      range: "Revenue!A1:H20",
     });
 
     const rows = response.data.values;
@@ -76,7 +78,7 @@ app.get("/api/locations/:name", async (req, res) => {
     
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Sheet1!A:H",
+      range: "Revenue!A1:H20",
     });
 
     const rows = response.data.values;
@@ -224,6 +226,22 @@ app.put("/api/locations/batch", async (req, res) => {
   }
 });
 
+app.get("/api/debug", async (req, res) => {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "Revenue!A1:H20",
+    });
+    res.json({
+      success: true,
+      rowCount: response.data.values?.length || 0,
+      rows: response.data.values,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
@@ -247,4 +265,13 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Google Sheets ID: ${SPREADSHEET_ID ? "Configured" : "Not configured"}`);
   console.log(`Credentials: ${process.env.GOOGLE_CLIENT_EMAIL ? "Loaded" : "Missing"}`);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
 });
