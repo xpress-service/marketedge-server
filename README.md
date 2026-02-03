@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Backend Server Setup Guide
 
 ## Overview
@@ -297,3 +298,6 @@ If you encounter any issues:
 2. Verify all environment variables are set correctly
 3. Ensure the spreadsheet structure matches the expected format
 4. Check that the service account has Editor access to the sheet
+=======
+# marketedge-server
+>>>>>>> 277be4c4935339d8f167400ce738b37a87bc5ec8
