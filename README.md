@@ -3,6 +3,10 @@
 ## Overview
 This Node/Express backend connects to Google Sheets to fetch and update location data for the Kaihma Assessment Dashboard.
 
+## Production URLs
+- **Backend API:** https://marketedge-server.onrender.com
+- **Frontend Dashboard:** https://marketedge-dashboard.vercel.app
+
 ## Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
